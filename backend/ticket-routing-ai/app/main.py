@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from loguru import logger
 
+from app.core.embedding.ai_suggestion_service import AISuggestionService
+from app.core.embedding.llm_client import LLMClient
 from app.core.embedding.pdf_search_api import PDFSearchAPI
 from app.core.ingestion.pdf_parser import PDFParseService
 from app.core.embedding.embedding import VCEmbedding
@@ -26,10 +28,13 @@ async def lifespan(app: FastAPI):
     pdf_service = PDFParseService()
 
     logger.info("Initializing embedding service...")
+    # llm_client = LLMClient()
+    # ai_suggestion_service = AISuggestionService(llm_client)
+
     embedding_service = VCEmbedding()
 
-    logger.info("Initializing search service...")
-    search_service = SearchService(embedding_service)
+    # logger.info("Initializing search service...")
+    # search_service = SearchService(embedding_service,ai_suggestion_service)
 
     pdf_folder_path = "/Users/anandh/Documents/Kubernetes"
     logger.info(f"Parsing PDFs from folder: {pdf_folder_path}")

@@ -19,6 +19,7 @@ class VCEmbedding:
         self.index = None
         self.chunks = None
         self.weights = {}
+        # self.suggestion_service = suggestion_service
 
         # NLP pipeline
         self.nlp = spacy.load("en_core_web_sm")
@@ -261,3 +262,15 @@ class VCEmbedding:
             })
 
         return results
+
+        # top_chunk_text = results[0]["text"] if results else ""
+        #
+        # ai_suggested_message = self.suggestion_service.generate_suggestion(
+        #     ticket_subject=query,
+        #     top_chunk_text=top_chunk_text
+        # )
+        #
+        # return {
+        #     "results": results,
+        #     "ai_suggested_message": ai_suggested_message
+        # }
