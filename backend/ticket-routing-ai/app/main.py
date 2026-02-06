@@ -42,9 +42,10 @@ async def lifespan(app: FastAPI):
     root_node_list = pdf_service.collect_nodes_from_teams(pdf_folder_path)
 
     logger.info("Building FAISS vector store...")
-    chunks = embedding_service.process_root_nodes(root_node_list)
-    embedding_service.build_vector_store(chunks)
-    embedding_service.calculate_weights()
+    team_chunks_map = embedding_service.process_root_nodes(root_node_list)
+    embedding_service.initialize_indexes(team_chunks_map)
+    embedding_service.initialize_indexes(team_chunks_map)
+
 
     logger.info("Bootstrap complete. Search service ready!")
     app.state.pdf_search_api = PDFSearchAPI(embedding_service)
