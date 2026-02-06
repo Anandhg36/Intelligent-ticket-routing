@@ -1,0 +1,59 @@
+<div class="signup-wrap">
+  <div class="card">
+    <aside class="hero">
+      <div class="brand">RMIT<span>1NE</span></div>
+      <div class="hero-copy">
+        <h2>Welcome to RMITONE</h2>
+        <p>A seamless, elegant experience for students and alumni.</p>
+      </div>
+      <div class="bubble b1"></div>
+      <div class="bubble b2"></div>
+      <div class="bubble b3"></div>
+      <div class="bubble ring r1"></div>
+      <div class="bubble ring r2"></div>
+    </aside>
+
+    <main class="form-pane">
+      <section class="form-area">
+        <h1>Sign Up</h1>
+        <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <input
+            type="email"
+            placeholder="Email"
+            formControlName="email"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Full Name"
+            formControlName="name"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            formControlName="password"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Canvas Token"
+            formControlName="canvastoken"
+            required
+          />
+          <p *ngIf="success" class="success-text">Registration successful!</p>
+          <p *ngIf="error" class="error-text">{{ error }}</p>
+
+          <button type="submit" class="cta" [disabled]="loading">
+            Let’s Get Started!
+          </button>
+
+          <p class="alt">
+            Already a member?
+            <a routerLink="/login">Sign In</a>
+          </p>
+        </form>
+      </section>
+    </main>
+  </div>
+</div>

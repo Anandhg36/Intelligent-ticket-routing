@@ -1,0 +1,13 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "node",
+    "useDefineForClassFields": false,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "baseUrl": "./"
+  }
+}

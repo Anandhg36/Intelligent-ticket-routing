@@ -1,0 +1,165 @@
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">▮▮</div>
+      <div class="brand-name">TailAdmin</div>
+    </div>
+
+    <div class="side-section-title">TICKETS</div>
+
+    <nav class="nav">
+      <!-- All Tickets -->
+      <a class="nav-item" routerLink="/dashboard/ticket-listing" routerLinkActive="active">
+        <span class="nav-ico">
+          <svg class="ico">
+            <use href="#i-ticket"></use>
+          </svg>
+        </span>
+        <span class="nav-text">All Tickets</span>
+      </a>
+
+      <!-- Teams -->
+      <div class="side-section-title mt">TEAMS</div>
+
+      <div class="nav-sub">
+
+        <div class="nav-sub">
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']"
+            [queryParams]="{ team: 'Cluster Architecture' }" routerLinkActive="sub-active">
+            Cluster Architecture
+          </a>
+
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']"
+            [queryParams]="{ team: 'Containers and Workloads' }" routerLinkActive="sub-active">
+            Containers and Workloads
+          </a>
+
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']" [queryParams]="{ team: 'Networking' }"
+            routerLinkActive="sub-active">
+            Networking
+          </a>
+
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']"
+            [queryParams]="{ team: 'Cluster Administration' }" routerLinkActive="sub-active">
+            Cluster Administration
+          </a>
+
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']"
+            [queryParams]="{ team: 'Configuration and Security' }" routerLinkActive="sub-active">
+            Configuration and Security
+          </a>
+
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']"
+            [queryParams]="{ team: 'Scheduling and Resource management' }" routerLinkActive="sub-active">
+            Scheduling and Resource management
+          </a>
+
+          <a class="nav-sub-item" [routerLink]="['/dashboard/ticket-listing']" [queryParams]="{ team: 'Storage' }"
+            routerLinkActive="sub-active">
+            Storage
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="side-section-title mt">OTHERS</div>
+    <nav class="nav">
+      <a class="nav-item muted" href="#">
+        <span class="nav-ico">
+          <svg class="ico">
+            <use href="#i-mail"></use>
+          </svg>
+        </span>
+        <span class="nav-text">Email</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="icon-btn" type="button" aria-label="menu">
+        <svg class="ico">
+          <use href="#i-menu"></use>
+        </svg>
+      </button>
+
+      <div class="search">
+        <svg class="ico">
+          <use href="#i-search"></use>
+        </svg>
+        <input type="text" placeholder="Search or type command..." />
+        <span class="kbd">⌘ K</span>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-btn" type="button" aria-label="theme">
+          <svg class="ico">
+            <use href="#i-moon"></use>
+          </svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="notifications">
+          <svg class="ico">
+            <use href="#i-bell"></use>
+          </svg>
+        </button>
+
+        <div class="user">
+          <div class="avatar">M</div>
+          <div class="user-meta">
+            <div class="user-name">Musharof</div>
+            <div class="user-role">Admin</div>
+          </div>
+          <svg class="ico chevron">
+            <use href="#i-chevron"></use>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Routed pages -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- Icons -->
+<svg aria-hidden="true" width="0" height="0" style="position:absolute;left:-9999px;visibility:hidden">
+  <symbol id="i-menu" viewBox="0 0 24 24">
+    <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </symbol>
+
+  <symbol id="i-search" viewBox="0 0 24 24">
+    <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2" />
+    <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </symbol>
+
+  <symbol id="i-moon" viewBox="0 0 24 24">
+    <path d="M21 13.2A8.4 8.4 0 0 1 10.8 3a7.8 7.8 0 1 0 10.2 10.2Z" fill="currentColor" opacity=".9" />
+  </symbol>
+
+  <symbol id="i-bell" viewBox="0 0 24 24">
+    <path d="M12 22a2.3 2.3 0 0 0 2.2-2H9.8A2.3 2.3 0 0 0 12 22Z" fill="currentColor" />
+    <path d="M18 16V11a6 6 0 0 0-12 0v5l-2 2h16l-2-2Z" fill="currentColor" opacity=".35" />
+  </symbol>
+
+  <symbol id="i-chevron" viewBox="0 0 24 24">
+    <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round" />
+  </symbol>
+
+  <symbol id="i-ticket" viewBox="0 0 24 24">
+    <path d="M5 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1a2 2 0 0 0 0 4v1a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-1a2 2 0 0 0 0-4V8Z"
+      fill="currentColor" opacity=".35" />
+    <path d="M9 9h6M9 12h6M9 15h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </symbol>
+
+  <symbol id="i-mail" viewBox="0 0 24 24">
+    <path d="M4 6h16v12H4V6Z" fill="currentColor" opacity=".25" />
+    <path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round" />
+  </symbol>
+</svg>

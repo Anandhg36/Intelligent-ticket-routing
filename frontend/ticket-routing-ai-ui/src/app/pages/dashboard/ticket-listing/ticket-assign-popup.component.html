@@ -1,0 +1,47 @@
+<div class="overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Re-assign Ticket</h2>
+            <button class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="field">
+                <label>Assign to</label>
+                <select [(ngModel)]="selectedTeam">
+                    <option value="">Select team</option>
+                    <option *ngFor="let t of teams" [value]="t">
+                        {{ t }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Did AI assign the wrong team?</label>
+
+                <div class="radio-group">
+                    <label class="radio">
+                        <input type="radio" name="aiWrong" [value]="true" [(ngModel)]="aiSuggestedWrong" />
+                        Yes
+                    </label>
+
+                    <label class="radio">
+                        <input type="radio" name="aiWrong" [value]="false" [(ngModel)]="aiSuggestedWrong" />
+                        No
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="field">
+                <label>Reason / Team Review</label>
+                <textarea [(ngModel)]="reviewText" placeholder="Explain why the reassignment was needed..."></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn secondary" (click)="closeModal()">Cancel</button>
+            <button class="btn primary" (click)="submitForm()">Submit</button>
+        </div>
+    </div>
+</div>

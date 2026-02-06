@@ -1,0 +1,34 @@
+# ========================
+# Python (AI service)
+# ========================
+backend/ticket-routing-ai/.venv/
+backend/ticket-routing-ai/__pycache__/
+backend/ticket-routing-ai/*.pyc
+backend/ticket-routing-ai/.env
+
+# FAISS / embeddings (DO NOT COMMIT)
+backend/ticket-routing-ai/data/faiss/
+
+# ========================
+# Java / Spring Boot
+# ========================
+backend/ticket-routing-api/target/
+backend/ticket-routing-api/*.log
+backend/ticket-routing-api/.idea/
+
+# ========================
+# Angular / Node
+# ========================
+ticket-routing-ai-ui/node_modules/
+ticket-routing-ai-ui/dist/
+ticket-routing-ai-ui/.angular/
+ticket-routing-ai-ui/.env
+ticket-routing-ai-ui/.idea/
+
+# ========================
+# IDE / OS
+# ========================
+.idea/
+.vscode/
+*.DS_Store
+*.log

@@ -1,0 +1,60 @@
+{
+  "name": "awesome-angular",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "eslint . --ext .ts,.html",
+    "format": "prettier --write \"**/*.{ts,html,css,scss,md,json}\"",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{ts,html,css,scss,md,json}": [
+      "prettier --write"
+    ],
+    "*.{ts,html}": [
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "@angular/animations": "^18.2.0",
+    "@angular/common": "^18.2.0",
+    "@angular/compiler": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@angular/forms": "^18.2.0",
+    "@angular/platform-browser": "^18.2.0",
+    "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/router": "^18.2.0",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.14.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.2.21",
+    "@angular-eslint/builder": "^18.3.1",
+    "@angular-eslint/eslint-plugin": "^18.3.1",
+    "@angular-eslint/eslint-plugin-template": "^18.3.1",
+    "@angular-eslint/schematics": "^18.3.1",
+    "@angular-eslint/template-parser": "^18.3.1",
+    "@angular/cli": "^18.2.21",
+    "@angular/compiler-cli": "^18.2.14",
+    "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.11.30",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.0",
+    "jasmine-core": "~5.3.0",
+    "karma": "~6.4.3",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.3.2",
+    "typescript": "~5.5.4"
+  }
+}

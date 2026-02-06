@@ -1,0 +1,38 @@
+/* ✅ Global reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f5f7fb;
+  color: #111827;
+}
+
+/* ✅ Prevent images/icons from exploding */
+img, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ✅ If your template uses container widths */
+.page {
+  width: 100%;
+}
+
+/* ✅ If you are using Tailwind in this project, you MUST have these 3 lines:
+   (If you are NOT using Tailwind, remove them)
+*/
+/*
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+*/

@@ -1,0 +1,39 @@
+<div class="auth-wrap">
+  <div class="card">
+    <!-- Left hero -->
+    <aside class="hero">
+      <div class="brand">RMIT<span>1NE</span></div>
+
+      <div class="hero-copy">
+        <h2>Welcome back</h2>
+        <p>Sign in to continue your RMITONE journey.</p>
+      </div>
+
+      <!-- subtle décor -->
+      <div class="bubble b1"></div>
+      <div class="bubble b2"></div>
+      <div class="bubble b3"></div>
+      <div class="bubble ring r1"></div>
+      <div class="bubble ring r2"></div>
+    </aside>
+
+    <!-- Right: form -->
+    <main class="form-pane">
+      <section class="form-area">
+        <h1>Sign In</h1>
+
+        <!-- ✅ Reactive form wiring -->
+        <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <input type="email" placeholder="Email" formControlName="email" />
+          <input type="password" placeholder="Password" formControlName="password" />
+          <div class="row between">
+            <a class="link" href="#">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="cta">Sign In</button>
+          <p class="alt">New to RMITONE? <a href="/signup">Create an account</a></p>
+        </form>
+      </section>
+    </main>
+  </div>
+</div>

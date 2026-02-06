@@ -1,0 +1,190 @@
+<div class="page">
+  <div class="page-head">
+    <h1>Support Ticket</h1>
+    <div class="breadcrumb">Home <span>›</span> Support Ticket</div>
+  </div>
+
+  <!-- Stat cards -->
+  <section class="stats">
+    <div class="stat-card">
+      <div class="stat-ico blue">🎫</div>
+      <div>
+        <div class="stat-value">{{ totalTicketsCount }}</div>
+        <div class="stat-label">Total tickets</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-ico amber">⏳</div>
+      <div>
+        <div class="stat-value">{{ pendingTicketsCount }}</div>
+        <div class="stat-label">Pending tickets</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-ico green">✅</div>
+      <div>
+        <div class="stat-value">{{ solvedTicketsCount }}</div>
+        <div class="stat-label">Solved tickets</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ MASTER/DETAIL AREA -->
+  <section class="work-area" [class.has-detail]="!!selectedTicket">
+
+    <!-- LEFT -->
+    <div class="table-card">
+      <div class="table-top">
+        <div>
+          <h2>Support Tickets</h2>
+          <p>Your most recent support tickets list</p>
+        </div>
+
+        <div class="table-actions">
+          <div class="tabs">
+            <button class="tab" [class.active]="tab==='All'" (click)="setTab('All')">All</button>
+            <button class="tab" [class.active]="tab==='Resolved'" (click)="setTab('Resolved')">Solved</button>
+            <button class="tab" [class.active]="tab==='Open'" (click)="setTab('Open')">Pending</button>
+          </div>
+
+          <!-- <input
+            class="search"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchChange()"
+            placeholder="Search..."
+          /> -->
+        </div>
+      </div>
+
+      <div class="table-grid">
+        <!-- HEADER -->
+        <div class="row header">
+          <div></div>
+          <div>Ticket ID</div>
+          <div>Requested By</div>
+          <div>Subject</div>
+          <div>Create Date</div>
+          <div>Status</div>
+          <div></div>
+        </div>
+
+        <!-- ROWS -->
+        <div class="row" *ngFor="let t of filteredTickets" (click)="selectTicket(t)"
+          [class.active]="selectedTicket?.id === t.id">
+
+          <div><input type="checkbox" (click)="$event.stopPropagation()" /></div>
+
+          <!-- ✅ API: ticketNumber preferred, fallback to id -->
+          <div class="mono">{{ t.ticketNumber || ('#' + t.id) }}</div>
+
+          <!-- ✅ API: requester object -->
+          <div>
+            <div class="name">{{ t.requesterName || '-' }}</div>
+            <div class="email">{{ t.requesterEmail || '-' }}</div>
+          </div>
+
+          <div class="clip">{{ t.subject }}</div>
+
+          <!-- ✅ API: createdAt ISO -->
+          <div>{{ t.createdAt | date:'dd MMM, yyyy' }}</div>
+
+          <div>
+            <!-- ✅ API: status enum -->
+            <span class="pill" [class.solved]="t.status === 'RESOLVED'">
+              {{ t.status === 'RESOLVED' ? 'Solved' : 'Pending' }}
+            </span>
+          </div>
+
+          <div class="menu">•••</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <aside class="detail-card" *ngIf="selectedTicket as s">
+      <div class="detail-head">
+        <div>
+          <div class="detail-title">Ticket Detail</div>
+          <div class="detail-sub mono">{{ s.ticketNumber || ('#' + s.id) }}</div>
+        </div>
+
+        <div class="detail-actions">
+          <span class="pill" [class.solved]="s.status === 'RESOLVED'">
+            {{ s.status === 'RESOLVED' ? 'Solved' : 'Pending' }}
+          </span>
+
+          <button class="close-btn" type="button" (click)="closeDetail()">✕</button>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="kv">
+          <div class="k">Subject</div>
+          <div class="v">{{ s.subject }}</div>
+        </div>
+
+        <div class="kv">
+          <div class="k">Requested By</div>
+          <div class="v">{{ s.requesterName|| '-' }}</div>
+          <div class="small">{{ s.requesterEmail || '-' }}</div>
+        </div>
+
+        <div class="kv-grid">
+          <div class="kv">
+            <div class="k">Created</div>
+            <div class="v">{{ s.createdAt | date:'dd MMM, yyyy, h:mm a' }}</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Assigned Team</div>
+            <div class="v">
+              {{ s.assignedTeamName || 'Unassigned' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ API: ticket_detail -->
+        <div class="ai-result">
+          <h3>AI Result</h3>
+
+          <div class="team-bar" *ngFor="let t of s.teams">
+            <div class="team-bar-fill" [ngClass]="getConfidenceClass(t.confidence)" [style.width.%]="t.confidence">
+            </div>
+
+            <div class="team-bar-content">
+              <span class="team-name">{{ t.team }}</span>
+              <span class="team-score">{{ t.confidence | number:'1.0-2' }}%</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="section" *ngIf="s.detail?.description">
+          <div class="section-title">Description</div>
+          <div class="mini">{{ s.detail?.description }}</div>
+        </div>
+
+        <!-- <div class="section">
+          <div class="section-title">Add Comment</div>
+          <textarea class="textarea" [(ngModel)]="replyText" placeholder="Write a reply..."></textarea>
+          <button class="post" (click)="postReply()">Post Comment</button>
+        </div> -->
+        <div class="mt-6">
+          <button class="post"
+            (click)="openReassignModal()">
+            Re-assign Ticket
+          </button>
+        </div>
+      </div>
+    </aside>
+
+
+    <!-- Reassign Ticket Popup -->
+    <app-ticket-assign-popup *ngIf="showReassignModal" [ticket]="selectedTicket" [teams]="availableTeams"
+      (close)="closeReassignModal()" (submit)="submitReassignment($event)">
+    </app-ticket-assign-popup>
+
+  </section>
+</div>

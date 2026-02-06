@@ -1,0 +1,175 @@
+/* =========================
+   RMIT Loader (complete CSS)
+   File: rmit-loader.component.css
+   ========================= */
+
+:host {
+  /* Brand / palette (Lavender-Rose) */
+  --brand:       #9F86C0;   /* main accent for strokes / bubbles */
+  --brand-deep:  #5E548E;   /* deeper shade for gradients */
+  --bg-dim:      rgba(35, 25, 66, .10);
+  --overlay-bg:  rgba(12, 10, 22, .55); /* DARK overlay */
+
+  /* Sizing */
+  --size: 96px;  /* default spinner size; can be overridden by inline style */
+
+  /* FX */
+  --shadow: 0 14px 40px rgba(35,25,66,.22);
+
+  display: contents;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+}
+
+/* =========================
+   Overlay shell (fullscreen) 
+   ========================= */
+.loader-shell.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--overlay-bg);          /* dark veil */
+  z-index: 9999;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+/* Inline/embedded usage just centers the spinner block */
+.loader-shell:not(.overlay) {
+  display: inline-grid;
+  place-items: center;
+}
+
+/* =========================
+   Spinner core
+   ========================= */
+.spinner {
+  width: var(--size);
+  height: var(--size);
+  position: relative;
+  color: var(--brand);                    /* used by SVG stroke if not overridden */
+  filter: drop-shadow(0 4px 12px rgba(159,134,192,.35));
+}
+
+/* Rotating dashed ring */
+.ring {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+.ring .track {
+  fill: none;
+  stroke: var(--bg-dim);
+  stroke-width: 10;
+}
+
+.ring .dash {
+  fill: none;
+  stroke: var(--brand);
+  stroke-linecap: round;
+  stroke-width: 10;
+  stroke-dasharray: 180 80;               /* segment length / gap */
+  animation:
+    dash-shift 1.2s ease-in-out infinite,
+    hue 6s linear infinite;
+}
+
+/* =========================
+   Orbiting bubbles
+   ========================= */
+.bubble {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: calc(var(--size) * 0.14);
+  height: calc(var(--size) * 0.14);
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #fff 0%, var(--brand) 45%, var(--brand-deep) 100%);
+  box-shadow:
+    0 6px 18px rgba(159,134,192,.45),
+    inset 0 1px 2px rgba(255,255,255,.65);
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.b1 { animation: orbit-1 1.8s linear infinite; }
+.b2 { animation: orbit-2 2.2s linear infinite; }
+.b3 { animation: orbit-3 2.6s linear infinite; }
+
+/* =========================
+   Keyframes
+   ========================= */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dash-shift {
+  0%   { stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 130 130; stroke-dashoffset: -90; }
+  100% { stroke-dashoffset: -260; }
+}
+
+@keyframes hue {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* Orbits: circular paths with counter-rotation to keep bubble upright */
+@keyframes orbit-1 {
+  0%   { transform: translate(-50%, -50%) rotate(0)   translate(calc(var(--size) * .40)) rotate(0); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) translate(calc(var(--size) * .40)) rotate(-360deg); }
+}
+@keyframes orbit-2 {
+  0%   { transform: translate(-50%, -50%) rotate(0)   translate(calc(var(--size) * .28)) rotate(0); }
+  100% { transform: translate(-50%, -50%) rotate(-360deg) translate(calc(var(--size) * .28)) rotate(360deg); }
+}
+@keyframes orbit-3 {
+  0%   { transform: translate(-50%, -50%) rotate(0)   translate(calc(var(--size) * .18)) rotate(0); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) translate(calc(var(--size) * .18)) rotate(-360deg); }
+}
+
+/* =========================
+   Accessibility
+   ========================= */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Reduce motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .ring,
+  .ring .dash,
+  .b1, .b2, .b3 {
+    animation: none !important;
+  }
+  .ring .dash { stroke-dasharray: 120 120; }
+}
+
+/* =========================
+   Optional theming helpers
+   (apply on host element)
+   ========================= */
+/* Force light overlay (rare) */
+:host(.theme-light) .loader-shell.overlay {
+  background: rgba(255,255,255,.55);
+  color: #231942;
+}
+
+/* Extra-dark ring track variant */
+:host(.theme-dark) .ring .track {
+  stroke: rgba(255,255,255,.08);
+}
+
+/* =========================
+   Quick tips
+   =========================
+   - You can change size per usage:
+       <div class="spinner" style="--size:72px"></div>
+     (the component already sets this from the [size] input)
+
+   - To change color per usage, set [color] input in TS (applies via inline style).
+   - For an even darker overlay globally, tweak --overlay-bg on :host.
+*/
