@@ -1,10 +1,13 @@
 package com.ticketrouting.ticket_routing_api.event;
 
 
+import com.ticketrouting.ticket_routing_api.dto.AiTeamConfidence;
 import com.ticketrouting.ticket_routing_api.model.Team;
 import com.ticketrouting.ticket_routing_api.model.Ticket;
+import com.ticketrouting.ticket_routing_api.model.TicketAiTeamConfidence;
 import com.ticketrouting.ticket_routing_api.model.TicketDetail;
 import com.ticketrouting.ticket_routing_api.repository.TeamRepository;
+import com.ticketrouting.ticket_routing_api.repository.TicketAiTeamConfidenceRepository;
 import com.ticketrouting.ticket_routing_api.repository.TicketDetailRepository;
 import com.ticketrouting.ticket_routing_api.repository.TicketRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -23,23 +26,27 @@ public class TicketRoutingAsyncListener {
     private final TicketDetailRepository ticketDetailRepository;
     private final TeamRepository teamRepository;
     private final AiRoutingClient aiRoutingClient;
+    private final TicketAiTeamConfidenceRepository ticketAiTeamConfidenceRepository;
 
     public TicketRoutingAsyncListener(
             TicketRepository ticketRepository,
             TicketDetailRepository ticketDetailRepository,
             TeamRepository teamRepository,
+            TicketAiTeamConfidenceRepository ticketAiTeamConfidenceRepository,
             AiRoutingClient aiRoutingClient
     ) {
         this.ticketRepository = ticketRepository;
         this.ticketDetailRepository = ticketDetailRepository;
         this.teamRepository = teamRepository;
         this.aiRoutingClient = aiRoutingClient;
+        this.ticketAiTeamConfidenceRepository = ticketAiTeamConfidenceRepository;
     }
 
     // IMPORTANT: run only after transaction commits successfully
     @Async("aiExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleTicketCreated(TicketCreatedEvent event) {
+
         System.out.println(">>> [AI-LISTENER] Event received for ticketId=" + event.getTicketId());
         System.out.println(">>> [AI-LISTENER] Running in thread: " + Thread.currentThread().getName());
 
@@ -51,66 +58,79 @@ public class TicketRoutingAsyncListener {
 
         System.out.println(">>> [AI-LISTENER] Calling AI for subject: " + ticket.getSubject());
 
-        // Call AI using subject
-        List<AiSearchResult> results = aiRoutingClient.search(ticket.getSubject());
-        System.out.println(">>> [AI-LISTENER] AI returned " + results.size() + " results");
-        String aiSuggestedMessage = null;
-        if (!results.isEmpty()) {
-            aiSuggestedMessage = results.get(0).getAiSuggestedMessage();
-        }
-
-
-        Optional<AiSearchResult> best = results.stream()
-                .filter(r -> r.getTeam() != null && !r.getTeam().isBlank())
-                .max(Comparator.comparing(r -> r.getScore() == null ? 0.0 : r.getScore()));
-
-        // Update ticket_detail
-        TicketDetail detail = ticketDetailRepository.findByTicketId(ticket.getId()).orElse(null);
-        if (detail == null) {
-            System.out.println(">>> [AI-LISTENER] TicketDetail not found, exiting");
+        // =========================
+        // STEP 0 — CALL AI
+        // =========================
+        AiSearchResponse response = aiRoutingClient.search(ticket.getSubject());
+        if (response == null || response.getTeams() == null || response.getTeams().isEmpty()) {
+            System.out.println(">>> [AI-LISTENER] Empty AI response");
             return;
         }
 
-        if (best.isPresent()) {
-            AiSearchResult top = best.get();
+        List<AiTeamConfidence> teams = response.getTeams();
+        List<AiSearchResult> results = response.getResults();
 
-            // 1) Save AI suggestion
-            detail.setAiSuggestedTeam(top.getTeam());
-            detail.setDescription(aiSuggestedMessage);
+        // =========================
+        // STEP 1 — SAVE TOP 3 TEAM CONFIDENCES (ROWS)
+        // =========================
+        int rank = 1;
+        for (AiTeamConfidence t : teams.stream().limit(3).toList()) {
 
-            // 2) Confidence calc (0..100)
-            double score = (top.getScore() == null) ? 0.0 : top.getScore();
-            Double confidence = toConfidence(top.getScore());
-            System.out.println(">>> [AI-LISTENER] Best team=" + top.getTeam()
-                    + " confidence=" + confidence);
-            detail.setAiConfidence((double) confidence);
+            TicketAiTeamConfidence conf = new TicketAiTeamConfidence();
+            conf.setTicket(ticket);
+            conf.setTeamName(t.getTeam());
+            conf.setConfidence(t.getConfidence()); // already 0–100 from Python
+            conf.setRankOrder(rank++);
 
-            ticketDetailRepository.save(detail);
-
-            // 3) Assign only if confidence >= 80, else keep unassigned
-            if (confidence >= 80) {
-                Team team = teamRepository.findByNameIgnoreCase(top.getTeam()).orElse(null);
-                if (team != null) {
-                    ticket.setAssignedTeam(team);
-                    System.out.println(">>> [AI-LISTENER] Ticket auto-assigned to team=" + team.getName());
-                } else {
-                    ticket.setAssignedTeam(null); // team name not found in DB
-                }
-            } else {
-                ticket.setAssignedTeam(null); // below threshold => unassigned
-                System.out.println(">>> [AI-LISTENER] Confidence < 80, ticket left unassigned");
-            }
-
-            ticketRepository.save(ticket);
-
-
-        } else {
-            detail.setAiSuggestedTeam(null);
-            detail.setAiConfidence(null);
-            ticketDetailRepository.save(detail);
-            System.out.println(">>> [AI-LISTENER] No AI suggestion found");
+            ticketAiTeamConfidenceRepository.save(conf);
         }
 
+        // =========================
+        // STEP 2 — TOP TEAM DECISION
+        // =========================
+        AiTeamConfidence topTeam = teams.get(0);
+        double topConfidence = topTeam.getConfidence();
+
+        TicketDetail detail = ticketDetailRepository
+                .findByTicketId(ticket.getId())
+                .orElse(null);
+
+        if (detail == null) {
+            System.out.println(">>> [AI-LISTENER] TicketDetail not found");
+            return;
+        }
+
+        // Best supporting chunk (optional but useful)
+        String aiSuggestedMessage = null;
+        if (results != null && !results.isEmpty()) {
+            aiSuggestedMessage = results.get(0).getAiSuggestedMessage();
+        }
+
+        // Save AI summary
+        detail.setAiSuggestedTeam(topTeam.getTeam());
+        detail.setAiConfidence(topConfidence);
+        detail.setDescription(aiSuggestedMessage);
+
+        ticketDetailRepository.save(detail);
+
+        // =========================
+        // STEP 3 — AUTO ASSIGN (>= 80 ONLY)
+        // =========================
+        if (topConfidence >= 80) {
+            teamRepository.findByNameIgnoreCase(topTeam.getTeam())
+                    .ifPresentOrElse(
+                            team -> {
+                                ticket.setAssignedTeam(team);
+                                System.out.println(">>> [AI-LISTENER] Auto-assigned to " + team.getName());
+                            },
+                            () -> ticket.setAssignedTeam(null)
+                    );
+        } else {
+            ticket.setAssignedTeam(null);
+            System.out.println(">>> [AI-LISTENER] Confidence < 80, not auto-assigning");
+        }
+
+        ticketRepository.save(ticket);
     }
 
     private Double toConfidence(Double score) {

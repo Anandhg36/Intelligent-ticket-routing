@@ -3,6 +3,7 @@ package com.ticketrouting.ticket_routing_api.dto;
 import com.ticketrouting.ticket_routing_api.model.Ticket;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TicketResponse {
 
@@ -21,6 +22,7 @@ public class TicketResponse {
 
     // ✅ change: use DTO not entity
     private TicketDetailResponse ticketDetail;
+    private List<AiTeamConfidence> teams;
 
     public TicketResponse() {}
 
@@ -94,4 +96,12 @@ public class TicketResponse {
     // ✅ add proper getter/setter
     public TicketDetailResponse getTicketDetail() { return ticketDetail; }
     public void setTicketDetail(TicketDetailResponse ticketDetail) { this.ticketDetail = ticketDetail; }
+
+    public List<AiTeamConfidence> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<AiTeamConfidence> teams) {
+        this.teams = teams;
+    }
 }

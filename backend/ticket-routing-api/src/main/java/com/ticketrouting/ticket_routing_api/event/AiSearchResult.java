@@ -8,6 +8,8 @@ public class AiSearchResult {
     private Double score;
     private Double boostContribution;
     private  String ai_suggested_message;
+    private Double teamConfidence;
+
 
     public String getPath() { return path; }
     public void setPath(String path) { this.path = path; }
@@ -26,5 +28,11 @@ public class AiSearchResult {
 
     public String getAiSuggestedMessage() {
         return ai_suggested_message;
+    }
+    public Double getTeamConfidence() {
+        return teamConfidence;
+    }
+    public void setTeamConfidence(Double teamConfidence) {
+        this.teamConfidence = teamConfidence;
     }
 }

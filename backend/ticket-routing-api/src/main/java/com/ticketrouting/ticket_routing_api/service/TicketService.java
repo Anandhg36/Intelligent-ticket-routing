@@ -1,14 +1,12 @@
 package com.ticketrouting.ticket_routing_api.service;
 
+import com.ticketrouting.ticket_routing_api.dto.AiTeamConfidence;
 import com.ticketrouting.ticket_routing_api.dto.CreateTicketRequest;
 import com.ticketrouting.ticket_routing_api.dto.TicketDetailResponse;
 import com.ticketrouting.ticket_routing_api.dto.TicketResponse;
 import com.ticketrouting.ticket_routing_api.event.TicketCreatedEvent;
 import com.ticketrouting.ticket_routing_api.model.*;
-import com.ticketrouting.ticket_routing_api.repository.CustomerRepository;
-import com.ticketrouting.ticket_routing_api.repository.TeamRepository;
-import com.ticketrouting.ticket_routing_api.repository.TicketDetailRepository;
-import com.ticketrouting.ticket_routing_api.repository.TicketRepository;
+import com.ticketrouting.ticket_routing_api.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,17 +22,19 @@ public class TicketService {
     private final CustomerRepository customerRepo;
     private final TeamRepository teamRepo;
     private final TicketDetailRepository ticketDetailRepository;
+    private final TicketAiTeamConfidenceRepository ticketAiTeamConfidenceRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     public TicketService(TicketRepository ticketRepo,
                          CustomerRepository customerRepo,
                          TeamRepository teamRepo,
-                         TicketDetailRepository ticketDetailRepository,
+                         TicketDetailRepository ticketDetailRepository, TicketAiTeamConfidenceRepository ticketAiTeamConfidenceRepository,
                          ApplicationEventPublisher eventPublisher) {
         this.ticketRepo = ticketRepo;
         this.customerRepo = customerRepo;
         this.teamRepo = teamRepo;
         this.ticketDetailRepository = ticketDetailRepository;
+        this.ticketAiTeamConfidenceRepository = ticketAiTeamConfidenceRepository;
         this.eventPublisher = eventPublisher;
     }
 
@@ -168,7 +168,19 @@ public class TicketService {
                     // ✅ Load detail row (1:1) and attach
                     TicketDetail detail = ticketDetailRepository.findByTicketId(t.getId()).orElse(null);
                     if (detail != null) {
-                        r.setTicketDetail(TicketDetailResponse.from(detail)); // assumes you add this setter in TicketResponse
+                        r.setTicketDetail(TicketDetailResponse.from(detail));
+                    }
+
+                    // 3️⃣ AI team confidences (TOP 3)
+                    List<AiTeamConfidence> aiTeams =
+                            ticketAiTeamConfidenceRepository
+                                    .findByTicketIdOrderByRankOrderAsc(t.getId())
+                                    .stream()
+                                    .map(AiTeamConfidence::from)
+                                    .toList();
+
+                    if (!aiTeams.isEmpty()) {
+                        r.setTeams(aiTeams);
                     }
 
                     return r;

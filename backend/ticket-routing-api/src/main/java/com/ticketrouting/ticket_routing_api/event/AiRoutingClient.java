@@ -13,16 +13,13 @@ public class AiRoutingClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public List<AiSearchResult> search(String subject) {
+    public AiSearchResponse search(String subject) {
         System.out.println(">>> [AI-CLIENT] subject=" + subject);
         String url = UriComponentsBuilder
                 .fromHttpUrl(AI_BASE_URL)
                 .queryParam("query", subject)
                 .toUriString();
 
-        AiSearchResult[] response =
-                restTemplate.getForObject(url, AiSearchResult[].class);
-
-        return response == null ? List.of() : List.of(response);
+        return restTemplate.getForObject(url, AiSearchResponse.class);
     }
 }

@@ -15,30 +15,58 @@ public class TicketActivity {
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
-    @Column(nullable = false, length = 160)
-    private String action;
+    @Column(name = "ai_assigned_team", length = 100)
+    private String aiAssignedTeam;
 
-    @Column(length = 255)
-    private String meta;
+    @Column(name = "human_assigned_team", length = 100)
+    private String humanAssignedTeam;
+
+    @Column(name = "ai_suggested_wrong")
+    private Boolean aiSuggestedWrong;
+
+    @Column(name = "team_review", columnDefinition = "TEXT")
+    private String teamReview;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     public TicketActivity() {}
 
-    // --- getters/setters ---
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // -------- getters & setters --------
+
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     public Ticket getTicket() { return ticket; }
     public void setTicket(Ticket ticket) { this.ticket = ticket; }
 
-    public String getAction() { return action; }
-    public void setAction(String action) { this.action = action; }
+    public String getAiAssignedTeam() { return aiAssignedTeam; }
+    public void setAiAssignedTeam(String aiAssignedTeam) {
+        this.aiAssignedTeam = aiAssignedTeam;
+    }
 
-    public String getMeta() { return meta; }
-    public void setMeta(String meta) { this.meta = meta; }
+    public String getHumanAssignedTeam() { return humanAssignedTeam; }
+    public void setHumanAssignedTeam(String humanAssignedTeam) {
+        this.humanAssignedTeam = humanAssignedTeam;
+    }
+
+    public Boolean getAiSuggestedWrong() { return aiSuggestedWrong; }
+    public void setAiSuggestedWrong(Boolean aiSuggestedWrong) {
+        this.aiSuggestedWrong = aiSuggestedWrong;
+    }
+
+    public String getTeamReview() { return teamReview; }
+    public void setTeamReview(String teamReview) {
+        this.teamReview = teamReview;
+    }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public void setCreatedAt(LocalDateTime now) {
+        this.createdAt = now;
+    }
 }

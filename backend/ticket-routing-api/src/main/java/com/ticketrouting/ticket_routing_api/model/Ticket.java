@@ -14,7 +14,7 @@ public class Ticket {
     @Column(name = "ticket_number", nullable = false, length = 30, unique = true)
     private String ticketNumber;
 
-    @Column(nullable = false, length = 255)
+    @Lob
     private String subject;
 
     @Enumerated(EnumType.STRING)
@@ -102,4 +102,7 @@ public class Ticket {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public void setAssignedTeamName(String humanAssignedTeam) {
+    }
 }
