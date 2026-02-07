@@ -34,6 +34,10 @@ Key goals:
   Maintains full transparency by displaying AI confidence breakdowns per team, enabling teams to understand why a ticket was routed.
 
 ---
+## Flow chart
+<img width="4980" height="1860" alt="ai_ticket_routing_architecture" src="https://github.com/user-attachments/assets/09ac8c59-0b59-4405-a978-1c7a765cb810" />
+
+---
 
 ## System Architecture Overview
 
@@ -109,3 +113,6 @@ All low-confidence tickets require human review.
 - Use successful and corrected assignments as labeled test cases to evaluate accuracy, detect model drift, and validate future improvements.
 - Enable LLM-assisted solution recommendations using the same document chunks responsible for routing (implementation complete, currently disabled due to infrastructure constraints).
 - Detect spikes in highly similar tickets within short time windows and proactively alert teams to identify potential regressions or release-related issues.
+
+
+
