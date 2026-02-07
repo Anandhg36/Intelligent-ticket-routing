@@ -108,6 +108,7 @@ All low-confidence tickets require human review.
 
 ## Future Enhancements
 - Leverage previously resolved, similar tickets to boost confidence scores for teams that have consistently handled comparable issues.
+- By logging manual ticket reassignments and using them as training signals, the system learns which routing decisions were wrong and adjusts future predictions accordingly.
 - Automatically summarize customer–agent conversations after ticket closure and store resolutions for reuse when similar tickets are raised.
 - Introduce AI-driven document parsing to extract structured signals from unstructured content, improving embedding quality and routing precision.
 - Use successful and corrected assignments as labeled test cases to evaluate accuracy, detect model drift, and validate future improvements.
