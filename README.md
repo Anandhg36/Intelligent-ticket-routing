@@ -136,7 +136,14 @@ Auto-assignment is restricted to high-confidence predictions only.
 All low-confidence tickets require human review.
 
 ---
+##  Application UI 
+<img width="2720" height="1494" alt="Screenshot 08-02-2026 at 15 57" src="https://github.com/user-attachments/assets/aa50218e-e683-48fd-aae9-0c160ddfc59f" />
+<img width="2720" height="1494" alt="Screenshot 08-02-2026 at 15 28 (1)" src="https://github.com/user-attachments/assets/2ba4365e-d234-4280-bed8-776f2eb0d280" />
 
+<img width="3024" height="1646" alt="Screenshot 08-02-2026 at 16 13" src="https://github.com/user-attachments/assets/cd148537-7462-450e-b504-6db636ac6bef" />
+
+
+---
 ## Future Enhancements
 - Leverage previously resolved, similar tickets to boost confidence scores for teams that have consistently handled comparable issues.
 - By logging manual ticket reassignments and using them as training signals, the system learns which routing decisions were wrong and adjusts future predictions accordingly.
