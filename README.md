@@ -34,6 +34,37 @@ Key goals:
   Maintains full transparency by displaying AI confidence breakdowns per team, enabling teams to understand why a ticket was routed.
 
 ---
+## 🧠 Approach & Design Decisions
+
+To automatically route support tickets to the correct team, the system requires a **reliable knowledge base** that represents how different support teams specialize in specific technical domains.
+
+In real-world systems, this knowledge base would typically consist of **internal company documentation**, historical tickets, and runbooks. However, due to privacy and data sensitivity concerns, such internal data cannot be used in an open-source project.
+
+For this project, I used **Kubernetes official documentation** as an open and well-structured proxy knowledge source.
+
+### How the approach works
+
+- Kubernetes documentation was **ingested and grouped by domain**, such as:
+  - Cluster Administration  
+  - Containers and Workloads  
+  - Networking  
+  - Scheduling and Resource Management  
+
+- Each domain was treated as a **virtual support team**, assuming that tickets related to that documentation would naturally belong to that team.
+
+- Technical documents within the same domain were combined to form a **team-level knowledge base**.
+
+### Why this works
+
+This setup allows the system to:
+
+- Compare incoming ticket content against each team’s knowledge base  
+- Predict the most relevant team with a confidence score  
+- Apply the same routing logic that would be used with real internal documentation  
+
+While the **knowledge source differs**, the **core routing logic remains identical** to a production setup. The project focuses on demonstrating how AI-driven classification, confidence-based automation, and transparent decision-making can be applied to real-world support workflows in a privacy-conscious manner.
+
+---
 ## Flow chart
 <img width="4980" height="1860" alt="ai_ticket_routing_architecture" src="https://github.com/user-attachments/assets/09ac8c59-0b59-4405-a978-1c7a765cb810" />
 
